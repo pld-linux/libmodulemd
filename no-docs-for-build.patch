@@ -1,0 +1,32 @@
+--- modulemd-2.12.0/meson.build~	2021-01-15 03:08:36.000000000 +0100
++++ modulemd-2.12.0/meson.build	2021-03-13 21:03:35.939739304 +0100
+@@ -67,17 +67,7 @@
+ with_docs = get_option('with_docs')
+ if with_docs
+   gtkdoc = dependency('gtk-doc')
+-  glib_docpath = join_paths(glib_prefix, 'share', 'gtk-doc', 'html')
+-
+-  ret = run_command ([test, '-e', join_paths(glib_docpath, 'glib/index.html')])
+-  if ret.returncode() != 0
+-    error('Missing documentation for GLib.')
+-  endif
+-
+-  ret = run_command ([test, '-e', join_paths(glib_docpath, 'gobject/index.html')])
+-  if ret.returncode() != 0
+-    error('Missing documentation for GObject.')
+-  endif
++  glib_docpath = get_option('glib_docpath')
+ endif
+ 
+ with_manpages = get_option('with_manpages')
+--- modulemd-2.12.0/meson_options.txt~	2021-01-15 03:08:36.000000000 +0100
++++ modulemd-2.12.0/meson_options.txt	2021-03-13 21:09:46.821667993 +0100
+@@ -32,6 +32,8 @@
+ option('with_docs', type : 'boolean', value : true,
+        description : 'Build API documentation.')
+ 
++option('glib_docpath', type : 'string')
++
+ option('with_manpages', type : 'feature', value : 'auto',
+        description : 'Build manual pages for included executables.')
+ 
