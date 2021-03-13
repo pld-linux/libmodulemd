@@ -7,22 +7,22 @@
 Summary:	Module metadata manipulation library
 Name:		libmodulemd
 Version:	2.12.0
-Release:	0.1
+Release:	1
 License:	MIT
 Group:		Libraries
-Source0:	https://github.com/fedora-modularity/libmodulemd/releases/download/%{name}-%{version}/modulemd-%{version}.tar.xz
+Source0:	https://github.com/fedora-modularity/libmodulemd/releases/download/libmodulemd-%{version}/modulemd-%{version}.tar.xz
 # Source0-md5:	e0b77248ee9d786d6d226492805d2cf2
 Patch0:		no-docs-for-build.patch
 URL:		https://github.com/fedora-modularity/libmodulemd
+BuildRequires:	glib2-devel
+%{?with_apidocs:BuildRequires:	gtk-doc}
+BuildRequires:	libmagic-devel
 BuildRequires:	meson >= 0.47.0
 BuildRequires:	ninja >= 1.5
-BuildRequires:	rpm-devel
 BuildRequires:	pkgconfig
-BuildRequires:	glib2-devel
+BuildRequires:	rpm-devel
+BuildRequires:	rpmbuild(macros) >= 1.726
 BuildRequires:	yaml-devel
-BuildRequires:	libmagic-devel
-%{?with_apidocs:BuildRequires:	gtk-doc}
-#Requires:	
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -64,6 +64,31 @@ API documentation for %{name} library.
 %description apidocs -l pl.UTF-8
 Dokumentacja API biblioteki %{name}.
 
+%package -n python2-%{name}
+Summary:	Python 2 bindings for %{name}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	python-pygobject3
+Requires:	python-six
+
+%description -n python2-%{name}
+Python 2 bindings for %{name}
+
+%package -n python3-%{name}
+Summary:	Python 3 bindings for %{name}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	python3-pygobject3
+Requires:	python3-six
+
+%description -n python3-%{name}
+Python 3 bindings for %{name}
+
+%package validator
+Summary:	Simple modulemd YAML validator
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+
+%description validator
+Simple modulemd YAML validator.
+
 %prep
 %setup -q -n modulemd-%{version}
 %patch0 -p1
@@ -94,12 +119,14 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.md
 %attr(755,root,root) %{_libdir}/%{name}.so.*.*.*
 %ghost %{_libdir}/%{name}.so.2
+%{_libdir}/girepository-1.0/Modulemd-2.0.typelib
 
 %files devel
 %defattr(644,root,root,755)
 %{_libdir}/%{name}.so
 %{_includedir}/modulemd-2.0
 %{_pkgconfigdir}/modulemd-2.0.pc
+%{_datadir}/gir-1.0/Modulemd-2.0.gir
 
 %files static
 %defattr(644,root,root,755)
@@ -110,3 +137,18 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc %{_gtkdocdir}/modulemd-2.0
 %endif
+
+%if %{with python2}
+%files -n python2-%{name}
+%defattr(644,root,root,755)
+%{py_sitedir}/gi/overrides/Modulemd.py
+%endif
+
+%files -n python3-%{name}
+%defattr(644,root,root,755)
+%{py3_sitedir}/gi/overrides/Modulemd.py
+
+%files validator
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/modulemd-validator
+%{_mandir}/man1/modulemd-validator.1*
