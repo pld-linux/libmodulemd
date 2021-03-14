@@ -7,7 +7,7 @@
 Summary:	Module metadata manipulation library
 Name:		libmodulemd
 Version:	2.12.0
-Release:	1
+Release:	2
 License:	MIT
 Group:		Libraries
 Source0:	https://github.com/fedora-modularity/libmodulemd/releases/download/libmodulemd-%{version}/modulemd-%{version}.tar.xz
@@ -64,13 +64,13 @@ API documentation for %{name} library.
 %description apidocs -l pl.UTF-8
 Dokumentacja API biblioteki %{name}.
 
-%package -n python2-%{name}
+%package -n python-%{name}
 Summary:	Python 2 bindings for %{name}
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	python-pygobject3
 Requires:	python-six
 
-%description -n python2-%{name}
+%description -n python-%{name}
 Python 2 bindings for %{name}
 
 %package -n python3-%{name}
@@ -139,7 +139,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with python2}
-%files -n python2-%{name}
+%files -n python-%{name}
 %defattr(644,root,root,755)
 %{py_sitedir}/gi/overrides/Modulemd.py
 %endif
