@@ -7,7 +7,7 @@
 Summary:	Module metadata manipulation library
 Name:		libmodulemd
 Version:	2.12.0
-Release:	4
+Release:	5
 License:	MIT
 Group:		Libraries
 Source0:	https://github.com/fedora-modularity/libmodulemd/releases/download/libmodulemd-%{version}/modulemd-%{version}.tar.xz
