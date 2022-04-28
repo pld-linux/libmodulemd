@@ -1,93 +1,121 @@
 #
 # Conditional build:
-%bcond_without	apidocs		# do not build and package API docs
-%bcond_without	python2		# CPython 2.x module
-%bcond_without	tests		# unit tests
+%bcond_without	apidocs	# API documentation
+%bcond_without	python2	# CPython 2.x module
+%bcond_without	python3	# CPython 3.x module
+%bcond_without	tests	# unit tests
 #
 Summary:	Module metadata manipulation library
+Summary(pl.UTF-8):	Biblioteka operowania na metadanych modułów
 Name:		libmodulemd
-Version:	2.12.0
-Release:	5
+Version:	2.14.0
+Release:	1
 License:	MIT
 Group:		Libraries
-Source0:	https://github.com/fedora-modularity/libmodulemd/releases/download/libmodulemd-%{version}/modulemd-%{version}.tar.xz
-# Source0-md5:	e0b77248ee9d786d6d226492805d2cf2
+#Source0Download: https://github.com/fedora-modularity/libmodulemd/releases
+Source0:	https://github.com/fedora-modularity/libmodulemd/releases/download/%{version}/modulemd-%{version}.tar.xz
+# Source0-md5:	607ca8676d3e6dbf04f24ecf80b2c97f
 Patch0:		no-docs-for-build.patch
 URL:		https://github.com/fedora-modularity/libmodulemd
-BuildRequires:	glib2-devel
+BuildRequires:	glib2-devel >= 2.0
 %{?with_apidocs:BuildRequires:	gtk-doc}
+BuildRequires:	gobject-introspection-devel
 BuildRequires:	libmagic-devel
 BuildRequires:	meson >= 0.47.0
 BuildRequires:	ninja >= 1.5
 BuildRequires:	pkgconfig
+%{?with_python2:BuildRequires:	python-modules >= 1:2.5}
+%{?with_python3:BuildRequires:	python3-modules >= 1:3.2}
 BuildRequires:	rpm-devel
-BuildRequires:	rpmbuild(macros) >= 1.726
+BuildRequires:	rpm-build >= 4.6
+BuildRequires:	rpmbuild(macros) >= 1.736
+BuildRequires:	tar >= 1:1.22
 BuildRequires:	yaml-devel
+BuildRequires:	xz
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 C Library for manipulating module metadata files.
 
+%description -l pl.UTF-8
+Biblioteka C do operowania na metadanych modułów.
+
 %package devel
-Summary:	Header files for %{name} library
-Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki %{name}
+Summary:	Header files for modulemd library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki modulemd
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	glib2-devel >= 2.0
+Requires:	libmagic-devel
+Requires:	rpm-devel
+Requires:	yaml-devel
 
 %description devel
-Header files for %{name} library.
+Header files for modulemd library.
 
 %description devel -l pl.UTF-8
-Pliki nagłówkowe biblioteki %{name}.
+Pliki nagłówkowe biblioteki modulemd.
 
 %package static
-Summary:	Static %{name} library
-Summary(pl.UTF-8):	Statyczna biblioteka %{name}
+Summary:	Static modulemd library
+Summary(pl.UTF-8):	Statyczna biblioteka modulemd
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
-Static %{name} library.
+Static modulemd library.
 
 %description static -l pl.UTF-8
-Statyczna biblioteka %{name}.
+Statyczna biblioteka modulemd.
 
 %package apidocs
-Summary:	API documentation for %{name} library
-Summary(pl.UTF-8):	Dokumentacja API biblioteki %{name}
+Summary:	API documentation for modulemd library
+Summary(pl.UTF-8):	Dokumentacja API biblioteki modulemd
 Group:		Documentation
 BuildArch:	noarch
 
 %description apidocs
-API documentation for %{name} library.
+API documentation for modulemd library.
 
 %description apidocs -l pl.UTF-8
-Dokumentacja API biblioteki %{name}.
+Dokumentacja API biblioteki modulemd.
 
 %package -n python-%{name}
-Summary:	Python 2 bindings for %{name}
+Summary:	Python 2 bindings for modulemd library
+Summary(pl.UTF-8):	Wiązania Pythona 2 do biblioteki modulemd
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	python-pygobject3
 Requires:	python-six
 
 %description -n python-%{name}
-Python 2 bindings for %{name}
+Python 2 bindings for modulemd library.
+
+%description -n python-%{name} -l pl.UTF-8
+Wiązania Pythona 2 do biblioteki modulemd.
 
 %package -n python3-%{name}
-Summary:	Python 3 bindings for %{name}
+Summary:	Python 3 bindings for module md library
+Summary(pl.UTF-8):	Wiązania Pythona 3 do biblioteki modulemd
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	python3-pygobject3
 Requires:	python3-six
 
 %description -n python3-%{name}
-Python 3 bindings for %{name}
+Python 3 bindings for module md library.
+
+%description -n python3-%{name} -l pl.UTF-8
+Wiązania Pythona 3 do biblioteki modulemd.
 
 %package validator
 Summary:	Simple modulemd YAML validator
+Summary(pl.UTF-8):	Prosty walidator YAML-a modulemd
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description validator
 Simple modulemd YAML validator.
+
+%description validator -l pl.UTF-8
+Prosty walidator YAML-a modulemd.
 
 %prep
 %setup -q -n modulemd-%{version}
@@ -99,7 +127,8 @@ Simple modulemd YAML validator.
 	-Dwith_docs=true \
 	-Dglib_docpath=%{_gtkdocdir} \
 %endif
-	%{?with_python2:-Dwith_py2=true}
+	%{?with_python2:-Dwith_py2=true} \
+	%{!?with_python3:-Dwith_py2=false}
 
 %ninja_build -C build
 
@@ -107,6 +136,17 @@ Simple modulemd YAML validator.
 rm -rf $RPM_BUILD_ROOT
 
 %ninja_install -C build
+
+%if %{with python2}
+%py_comp $RPM_BUILD_ROOT%{py_sitedir}
+%py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
+%py_postclean
+%endif
+
+%if %{with python3}
+%py3_comp $RPM_BUILD_ROOT%{py3_sitedir}
+%py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -116,37 +156,40 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README.md
-%attr(755,root,root) %{_libdir}/%{name}.so.*.*.*
-%ghost %{_libdir}/%{name}.so.2
+%doc COPYING NEWS README.md
+%attr(755,root,root) %{_libdir}/libmodulemd.so.*.*.*
+%ghost %{_libdir}/libmodulemd.so.2
 %{_libdir}/girepository-1.0/Modulemd-2.0.typelib
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/%{name}.so
+%{_libdir}/libmodulemd.so
 %{_includedir}/modulemd-2.0
 %{_pkgconfigdir}/modulemd-2.0.pc
 %{_datadir}/gir-1.0/Modulemd-2.0.gir
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/%{name}.a
+%{_libdir}/libmodulemd.a
 
 %if %{with apidocs}
 %files apidocs
 %defattr(644,root,root,755)
-%doc %{_gtkdocdir}/modulemd-2.0
+%{_gtkdocdir}/modulemd-2.0
 %endif
 
 %if %{with python2}
 %files -n python-%{name}
 %defattr(644,root,root,755)
-%{py_sitedir}/gi/overrides/Modulemd.py
+%{py_sitedir}/gi/overrides/Modulemd.py[co]
 %endif
 
+%if %{with python3}
 %files -n python3-%{name}
 %defattr(644,root,root,755)
 %{py3_sitedir}/gi/overrides/Modulemd.py
+%{py3_sitedir}/gi/overrides/__pycache__/Modulemd.cpython-*.py[co]
+%endif
 
 %files validator
 %defattr(644,root,root,755)

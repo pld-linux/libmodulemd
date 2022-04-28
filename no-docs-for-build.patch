@@ -1,6 +1,6 @@
---- modulemd-2.12.0/meson.build~	2021-01-15 03:08:36.000000000 +0100
-+++ modulemd-2.12.0/meson.build	2021-03-13 21:03:35.939739304 +0100
-@@ -67,17 +67,7 @@
+--- modulemd-2.14.0/meson.build.orig	2022-04-28 22:13:05.367853234 +0200
++++ modulemd-2.14.0/meson.build	2022-04-28 22:16:00.986901824 +0200
+@@ -67,17 +67,7 @@ test = find_program('test')
  with_docs = get_option('with_docs')
  if with_docs
    gtkdoc = dependency('gtk-doc')
@@ -18,7 +18,7 @@
 +  glib_docpath = get_option('glib_docpath')
  endif
  
- with_manpages = get_option('with_manpages')
+ # Keep with_manpages option a tristate feature for backward compatibility.
 --- modulemd-2.12.0/meson_options.txt~	2021-01-15 03:08:36.000000000 +0100
 +++ modulemd-2.12.0/meson_options.txt	2021-03-13 21:09:46.821667993 +0100
 @@ -32,6 +32,8 @@
