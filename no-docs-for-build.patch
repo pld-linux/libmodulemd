@@ -1,19 +1,23 @@
---- modulemd-2.14.0/meson.build.orig	2022-04-28 22:13:05.367853234 +0200
-+++ modulemd-2.14.0/meson.build	2022-04-28 22:16:00.986901824 +0200
-@@ -67,17 +67,7 @@ test = find_program('test')
+--- modulemd-2.15.0/meson.build.orig	2023-05-20 11:03:06.755527932 +0200
++++ modulemd-2.15.0/meson.build	2023-05-20 11:05:27.564765103 +0200
+@@ -69,21 +69,7 @@ test = find_program('test')
  with_docs = get_option('with_docs')
  if with_docs
    gtkdoc = dependency('gtk-doc')
 -  glib_docpath = join_paths(glib_prefix, 'share', 'gtk-doc', 'html')
 -
--  ret = run_command ([test, '-e', join_paths(glib_docpath, 'glib/index.html')])
+-  glib_index_path = join_paths(glib_docpath, 'glib/index.html')
+-  ret = run_command ([test, '-e', glib_index_path],
+-    check: false)
 -  if ret.returncode() != 0
--    error('Missing documentation for GLib.')
+-    error('Missing documentation for GLib: @0@'.format(glib_index_path))
 -  endif
 -
--  ret = run_command ([test, '-e', join_paths(glib_docpath, 'gobject/index.html')])
+-  gobject_index_path = join_paths(glib_docpath, 'gobject/index.html')
+-  ret = run_command ([test, '-e', gobject_index_path],
+-    check: false)
 -  if ret.returncode() != 0
--    error('Missing documentation for GObject.')
+-    error('Missing documentation for GObject: @0@'.format(gobject_index_path))
 -  endif
 +  glib_docpath = get_option('glib_docpath')
  endif

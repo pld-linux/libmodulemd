@@ -8,20 +8,19 @@
 Summary:	Module metadata manipulation library
 Summary(pl.UTF-8):	Biblioteka operowania na metadanych modułów
 Name:		libmodulemd
-Version:	2.14.0
+Version:	2.15.0
 Release:	1
 License:	MIT
 Group:		Libraries
 #Source0Download: https://github.com/fedora-modularity/libmodulemd/releases
 Source0:	https://github.com/fedora-modularity/libmodulemd/releases/download/%{version}/modulemd-%{version}.tar.xz
-# Source0-md5:	607ca8676d3e6dbf04f24ecf80b2c97f
+# Source0-md5:	3d231596fad04b1a16ff67257b3145da
 Patch0:		no-docs-for-build.patch
 URL:		https://github.com/fedora-modularity/libmodulemd
 BuildRequires:	glib2-devel >= 2.0
 %{?with_apidocs:BuildRequires:	gtk-doc}
 BuildRequires:	gobject-introspection-devel
-BuildRequires:	libmagic-devel
-BuildRequires:	meson >= 0.47.0
+BuildRequires:	meson >= 0.55.0
 BuildRequires:	ninja >= 1.5
 BuildRequires:	pkgconfig
 %{?with_python2:BuildRequires:	python-modules >= 1:2.5}
@@ -46,7 +45,6 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki modulemd
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	glib2-devel >= 2.0
-Requires:	libmagic-devel
 Requires:	rpm-devel
 Requires:	yaml-devel
 
