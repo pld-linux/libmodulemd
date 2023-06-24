@@ -121,10 +121,8 @@ Prosty walidator YAML-a modulemd.
 
 %build
 %meson build \
-%if %{with doc}
-	-Dwith_docs=true \
+	-Dwith_docs=%{__true_false apidocs} \
 	-Dglib_docpath=%{_gtkdocdir} \
-%endif
 	%{?with_python2:-Dwith_py2=true} \
 	%{!?with_python3:-Dwith_py2=false}
 
