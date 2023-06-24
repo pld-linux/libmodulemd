@@ -23,10 +23,16 @@ BuildRequires:	gobject-introspection-devel
 BuildRequires:	meson >= 0.55.0
 BuildRequires:	ninja >= 1.5
 BuildRequires:	pkgconfig
-%{?with_python2:BuildRequires:	python >= 1:2.5}
-%{?with_python2:BuildRequires:	python-modules >= 1:2.5}
-%{?with_python3:BuildRequires:	python3 >= 1:3.2}
-%{?with_python3:BuildRequires:	python3-modules >= 1:3.2}
+%if %{with python2}
+BuildRequires:	python >= 1:2.5
+BuildRequires:	python-modules >= 1:2.5
+BuildRequires:	python-pygobject3
+%endif
+%if %{with python3}
+BuildRequires:	python3 >= 1:3.2
+BuildRequires:	python3-modules >= 1:3.2
+BuildRequires:	python3-pygobject3
+%endif
 BuildRequires:	rpm-devel
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.736
