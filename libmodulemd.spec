@@ -35,7 +35,7 @@ BuildRequires:	python3-pygobject3
 %endif
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpm-devel
-BuildRequires:	rpmbuild(macros) >= 1.736
+BuildRequires:	rpmbuild(macros) >= 2.042
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 BuildRequires:	yaml-devel
