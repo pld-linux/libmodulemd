@@ -1,7 +1,7 @@
 #
 # Conditional build:
 %bcond_without	apidocs	# API documentation
-%bcond_without	python2	# CPython 2.x module
+%bcond_with	python2	# CPython 2.x module
 %bcond_without	python3	# CPython 3.x module
 %bcond_without	tests	# unit tests
 #
@@ -9,7 +9,7 @@ Summary:	Module metadata manipulation library
 Summary(pl.UTF-8):	Biblioteka operowania na metadanych modułów
 Name:		libmodulemd
 Version:	2.15.0
-Release:	1
+Release:	2
 License:	MIT
 Group:		Libraries
 #Source0Download: https://github.com/fedora-modularity/libmodulemd/releases
@@ -18,8 +18,8 @@ Source0:	https://github.com/fedora-modularity/libmodulemd/releases/download/%{ve
 Patch0:		no-docs-for-build.patch
 URL:		https://github.com/fedora-modularity/libmodulemd
 BuildRequires:	glib2-devel >= 2.0
-%{?with_apidocs:BuildRequires:	gtk-doc}
 BuildRequires:	gobject-introspection-devel
+%{?with_apidocs:BuildRequires:	gtk-doc}
 BuildRequires:	meson >= 0.55.0
 BuildRequires:	ninja >= 1.5
 BuildRequires:	pkgconfig
@@ -33,12 +33,12 @@ BuildRequires:	python3 >= 1:3.2
 BuildRequires:	python3-modules >= 1:3.2
 BuildRequires:	python3-pygobject3
 %endif
-BuildRequires:	rpm-devel
 BuildRequires:	rpm-build >= 4.6
+BuildRequires:	rpm-devel
 BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	tar >= 1:1.22
-BuildRequires:	yaml-devel
 BuildRequires:	xz
+BuildRequires:	yaml-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -125,21 +125,21 @@ Prosty walidator YAML-a modulemd.
 
 %prep
 %setup -q -n modulemd-%{version}
-%patch0 -p1
+%patch -P 0 -p1
 
 %build
-%meson build \
+%meson \
 	-Dwith_docs=%{__true_false apidocs} \
 	-Dglib_docpath=%{_gtkdocdir} \
 	%{?with_python2:-Dwith_py2=true} \
 	%{!?with_python3:-Dwith_py2=false}
 
-%ninja_build -C build
+%meson_build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%ninja_install -C build
+%meson_install
 
 %if %{with python2}
 %py_comp $RPM_BUILD_ROOT%{py_sitedir}
