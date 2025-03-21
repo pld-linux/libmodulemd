@@ -9,7 +9,7 @@ Summary:	Module metadata manipulation library
 Summary(pl.UTF-8):	Biblioteka operowania na metadanych modułów
 Name:		libmodulemd
 Version:	2.15.0
-Release:	2
+Release:	3
 License:	MIT
 Group:		Libraries
 #Source0Download: https://github.com/fedora-modularity/libmodulemd/releases
