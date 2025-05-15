@@ -1,28 +1,36 @@
---- modulemd-2.15.0/meson.build.orig	2023-05-20 11:03:06.755527932 +0200
-+++ modulemd-2.15.0/meson.build	2023-05-20 11:05:27.564765103 +0200
-@@ -69,21 +69,7 @@ test = find_program('test')
- with_docs = get_option('with_docs')
+--- modulemd-2.15.1/meson.build.orig	2025-05-09 12:43:40.000000000 +0200
++++ modulemd-2.15.1/meson.build	2025-05-15 18:14:03.692096923 +0200
+@@ -70,17 +70,15 @@ with_docs = get_option('with_docs')
+ gtk_doc_referred_paths = []
  if with_docs
    gtkdoc = dependency('gtk-doc')
--  glib_docpath = join_paths(glib_prefix, 'share', 'gtk-doc', 'html')
--
--  glib_index_path = join_paths(glib_docpath, 'glib/index.html')
--  ret = run_command ([test, '-e', glib_index_path],
--    check: false)
--  if ret.returncode() != 0
--    error('Missing documentation for GLib: @0@'.format(glib_index_path))
--  endif
--
--  gobject_index_path = join_paths(glib_docpath, 'gobject/index.html')
--  ret = run_command ([test, '-e', gobject_index_path],
--    check: false)
--  if ret.returncode() != 0
--    error('Missing documentation for GObject: @0@'.format(gobject_index_path))
--  endif
 +  glib_docpath = get_option('glib_docpath')
- endif
  
- # Keep with_manpages option a tristate feature for backward compatibility.
+   if glib.version().version_compare('<2.79.0')
+-    glib_docpath = join_paths(glib_prefix, 'share', 'gtk-doc', 'html')
+     glib_modules = ['glib', 'gobject' ]
+   else
+     warning('glib >= 2.79.0 documention might not be properly referred from libmodulemd documentation.')
+     if glib.version().version_compare('<2.80.1')
+-      glib_docpath = join_paths(glib_prefix, 'share', 'doc', 'glib-2.0')
+       glib_modules = ['glib', 'gobject' ]
+     else
+-      glib_docpath = join_paths(glib_prefix, 'share', 'doc')
+       glib_modules = ['glib-2.0', 'gobject-2.0' ]
+     endif
+   endif
+@@ -88,11 +86,6 @@ if with_docs
+   foreach referred_module : glib_modules
+     doc_module_path = join_paths(glib_docpath, referred_module)
+     doc_index_file = join_paths(doc_module_path, 'index.html')
+-    ret = run_command ([test, '-e', doc_index_file],
+-      check: false)
+-    if ret.returncode() != 0
+-      error('Missing GTK documentation for @0@: @1@'.format(referred_module, doc_index_file))
+-    endif
+     gtk_doc_referred_paths += [ doc_module_path ]
+   endforeach
+ endif
 --- modulemd-2.12.0/meson_options.txt~	2021-01-15 03:08:36.000000000 +0100
 +++ modulemd-2.12.0/meson_options.txt	2021-03-13 21:09:46.821667993 +0100
 @@ -32,6 +32,8 @@
