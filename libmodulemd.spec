@@ -8,13 +8,13 @@
 Summary:	Module metadata manipulation library
 Summary(pl.UTF-8):	Biblioteka operowania na metadanych modułów
 Name:		libmodulemd
-Version:	2.15.3
+Version:	2.15.4
 Release:	1
 License:	MIT
 Group:		Libraries
 #Source0Download: https://github.com/fedora-modularity/libmodulemd/releases
 Source0:	https://github.com/fedora-modularity/libmodulemd/releases/download/%{version}/modulemd-%{version}.tar.xz
-# Source0-md5:	0b2c69129cf3091272175f73c0d612ee
+# Source0-md5:	bdc55776a941d554c44b990417e89dea
 Patch0:		no-docs-for-build.patch
 URL:		https://github.com/fedora-modularity/libmodulemd
 BuildRequires:	glib2-devel >= 2.0
@@ -136,6 +136,10 @@ Prosty walidator YAML-a modulemd.
 	%{!?with_python3:-Dwith_py3=false}
 
 %meson_build
+
+%if %{with tests}
+%meson_test
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
